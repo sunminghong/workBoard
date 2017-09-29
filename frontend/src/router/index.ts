@@ -5,17 +5,19 @@ import MainBoard from '@/components/MainBoard.vue'
 import SignUp from '@/components/SignUp.vue'
 
 Vue.use(Router)
+
 const router = new Router({
+  mode: 'history',
   routes: [
-    {
-      path: '/',
-      name: 'MainBoard',
-      component: MainBoard,
-    },
     {
       path: '/sign_up',
       name: 'SignUp',
       component: SignUp,
+    },
+    {
+      path: '/',
+      name: 'MainBoard',
+      component: MainBoard,
     },
   ],
 })
