@@ -3,3 +3,11 @@ body {
   height: 100vh;
   min-height: 680px;
 }
+
+body {
+  display: flex;
+}
+
+#app {
+  flex: 1 1 auto;
+}
