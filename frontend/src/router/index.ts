@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 // import Hello from '@/components/Hello.vue'
-import MainBoard from '@/components/MainBoard.vue'
-import SignUp from '@/components/SignUp.vue'
+import MainBoard from '@/pages/MainBoard.vue'
+import SignUp from '@/pages/SignUp.vue'
 
 Vue.use(Router)
 

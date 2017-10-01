@@ -23,7 +23,7 @@ func CreatedUuid() string {
 	return uuid
 }
 
-func Created(board Board) {
+func CreatedBoard(board Board) {
 	o := orm.NewOrm()
 	o.Using("default")
 
