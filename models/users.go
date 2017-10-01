@@ -53,20 +53,27 @@ func CreateUser(user Users) (UserSuccessJson, ErrorMessage) {
 	return userJson, errorJson
 }
 
-func Login(user Users) string {
+func Login(user Users) (UserSuccessJson, ErrorMessage) {
 	o := orm.NewOrm()
 	o.Using("default")
 
 	var ouser Users
+	var errorJson ErrorMessage
+	var userJson UserSuccessJson
 
 	err := o.QueryTable("users").Filter("username", user.Username).One(&ouser)
 
 	if err == nil {
 		if ouser.Password != user.Password {
-			return "密码错误"
+			errorJson.Message = "密码错误"
+			return userJson, errorJson
 		}
 
-		return "登录成功"
+		userJson.Username = ouser.Username
+		userJson.Id = ouser.Id
+		return userJson, errorJson
 	}
-	return "用户不存在"
+
+	errorJson.Message = "用户不存在"
+	return userJson, errorJson
 }

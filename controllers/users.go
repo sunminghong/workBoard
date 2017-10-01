@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"workBoard/models"
 
 	"github.com/astaxie/beego"
@@ -33,13 +32,15 @@ func (this *UserCreateController) Post() {
 }
 
 func (this *UserLogInController) Post() {
-	var ob models.Users
-	json.Unmarshal(this.Ctx.Input.RequestBody, &ob)
-	mes := models.Login(ob)
-	u := this.GetSession("user")
-	fmt.Println(u)
-	if mes == "登录成功" {
-		this.SetSession("user", ob)
+	var user models.Users
+	json.Unmarshal(this.Ctx.Input.RequestBody, &user)
+	userJson, errorJson := models.Login(user)
+
+	if errorJson.Message == "" {
+		this.Data["json"] = userJson
+	} else {
+		this.Data["json"] = errorJson
+		this.Ctx.Output.SetStatus(403)
 	}
 
 	this.ServeJSON()
