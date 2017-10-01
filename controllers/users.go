@@ -20,8 +20,16 @@ type UserLogInController struct {
 func (this *UserCreateController) Post() {
 	var user models.Users
 	json.Unmarshal(this.Ctx.Input.RequestBody, &user)
+	userJson, errorJson := models.CreateUser(user)
+
+	if errorJson.Message == "" {
+		this.Data["json"] = userJson
+	} else {
+		this.Data["json"] = errorJson
+		this.Ctx.Output.SetStatus(403)
+	}
+
 	this.ServeJSON()
-	models.CreateUser(user)
 }
 
 func (this *UserLogInController) Post() {

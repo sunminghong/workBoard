@@ -8,38 +8,49 @@ import (
 )
 
 type Users struct {
-	Id       int
+	Id       int64
 	Username string `orm:"size(50)"`
 	Password string `orm:"size(50)"`
 }
 
-func CreateUser(user Users) string {
-	fmt.Println(user)
+type UserSuccessJson struct {
+	Id       int64  `json:"id"`
+	Username string `json:"username"`
+}
+
+type ErrorMessage struct {
+	Message string `json:"message"`
+}
+
+func CreateUser(user Users) (UserSuccessJson, ErrorMessage) {
 	o := orm.NewOrm()
 	o.Using("default")
 
 	qs := o.QueryTable("users")
-	fmt.Println(1)
 	num, err := qs.Filter("username", user.Username).Count()
-	message := ""
+
+	var errorJson ErrorMessage
+	var userJson UserSuccessJson
 
 	// 如果没有重复用户
 	if err == nil {
 		if num == 0 {
 			id, err := o.Insert(&user)
 			if err == nil {
-				fmt.Println("注册成功", id)
-				message = "注册成功"
-				return message
+				userJson.Username = user.Username
+				userJson.Id = id
+
+				fmt.Println("注册成功", userJson)
+				return userJson, errorJson
 			}
 		}
 
-		fmt.Println("已被注册")
-		message = "已被注册"
-		return message
+		errorJson.Message = "用户名已被注册"
+		return userJson, errorJson
 	}
 
-	return "出现错误"
+	errorJson.Message = "注册错误，稍后重试"
+	return userJson, errorJson
 }
 
 func Login(user Users) string {
