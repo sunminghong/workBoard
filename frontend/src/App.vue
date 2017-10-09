@@ -5,8 +5,9 @@
 </template>
 
 <script lang="ts">
-export default {
-  name: 'app',
+import Vue from 'vue'
+
+export default class App extends Vue {
 }
 </script>
 

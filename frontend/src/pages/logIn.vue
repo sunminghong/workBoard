@@ -55,7 +55,6 @@ export default class login extends Vue {
   vue: any = this
   buttonText: string = '注册'
   created() {
-    console.log(112)
     if (this.$route.name === 'LogIn') {
       this.buttonText = '登录'
     }

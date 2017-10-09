@@ -1,28 +1,43 @@
 package models
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"math/rand"
+	"time"
 
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
 )
 
-type Users struct {
+// 用户信息
+type User struct {
 	Id       int64
 	Username string `orm:"size(50)"`
+	Nickname string `orm:"size(50)"`
 	Password string `orm:"size(50)"`
 }
 
+// 用户成功信息 json
 type UserSuccessJson struct {
 	Id       int64  `json:"id"`
 	Username string `json:"username"`
+	Nickname string `json:"nickname"`
 }
 
+// 错误信息 json
 type ErrorMessage struct {
 	Message string `json:"message"`
 }
 
-func CreateUser(user Users) (UserSuccessJson, ErrorMessage) {
+// 随机昵称
+type Nickname struct {
+	Adjective []string `json:"adjective"`
+	Noum      []string `json:"noum"`
+}
+
+func CreateUser(user User) (UserSuccessJson, ErrorMessage) {
 	o := orm.NewOrm()
 	o.Using("default")
 
@@ -32,10 +47,12 @@ func CreateUser(user Users) (UserSuccessJson, ErrorMessage) {
 	var errorJson ErrorMessage
 	var userJson UserSuccessJson
 
-	// 如果没有重复用户
 	if err == nil {
+		// 如果没有重复用户
 		if num == 0 {
 			id, err := o.Insert(&user)
+
+			// 注册成功
 			if err == nil {
 				userJson.Username = user.Username
 				userJson.Id = id
@@ -53,17 +70,19 @@ func CreateUser(user Users) (UserSuccessJson, ErrorMessage) {
 	return userJson, errorJson
 }
 
-func Login(user Users) (UserSuccessJson, ErrorMessage) {
+func Login(user User) (UserSuccessJson, ErrorMessage) {
 	o := orm.NewOrm()
 	o.Using("default")
 
-	var ouser Users
+	// 存放数据库去除的 user
+	var ouser User
 	var errorJson ErrorMessage
 	var userJson UserSuccessJson
 
 	err := o.QueryTable("users").Filter("username", user.Username).One(&ouser)
 
 	if err == nil {
+		// 如果密码不相等
 		if ouser.Password != user.Password {
 			errorJson.Message = "密码错误"
 			return userJson, errorJson
@@ -74,6 +93,35 @@ func Login(user Users) (UserSuccessJson, ErrorMessage) {
 		return userJson, errorJson
 	}
 
+	// 如果不存在用户，或者出现错误
 	errorJson.Message = "用户不存在"
 	return userJson, errorJson
+}
+
+func GetMe() UserSuccessJson {
+	// 读取 json
+	bytes, err := ioutil.ReadFile("models/nickname.json")
+	var userJson UserSuccessJson
+
+	if err != nil {
+		// 读取失败，生成 json，使用默认名称
+		userJson.Nickname = "默认的昵称"
+		return userJson
+	}
+
+	var nickname Nickname
+
+	json.Unmarshal(bytes, &nickname)
+
+	// 随机取出字符串
+	var adjectiveLen int = len(nickname.Adjective) - 1
+	var noumLen int = len(nickname.Noum) - 1
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	var adjective string = nickname.Adjective[r.Intn(adjectiveLen)]
+	var noum string = nickname.Noum[r.Intn(noumLen)]
+
+	// 生成 json
+	userJson.Nickname = fmt.Sprintf("%s的%s", adjective, noum)
+
+	return userJson
 }

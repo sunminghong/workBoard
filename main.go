@@ -14,7 +14,7 @@ import (
 func init() {
 	// beego bug 必须 gob.Register 才能注册 session 相关 struct
 	gob.Register(models.Board{})
-	gob.Register(models.Users{})
+	gob.Register(models.User{})
 }
 
 func main() {

@@ -14,7 +14,7 @@ func init() {
 
 	//注册 model
 	orm.RegisterModel(new(Board))
-	orm.RegisterModel(new(Users))
+	orm.RegisterModel(new(User))
 
 	// // 建表
 	// CreateTables()
