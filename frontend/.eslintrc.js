@@ -14,6 +14,7 @@ module.exports = {
   plugins: [
     'html'
   ],
+  'linebreak-style': ['error', 'windows'],
   // check if imports actually resolve
   'settings': {
     'import/resolver': {
