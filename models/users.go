@@ -41,7 +41,7 @@ func CreateUser(user User) (UserSuccessJson, ErrorMessage) {
 	o := orm.NewOrm()
 	o.Using("default")
 
-	qs := o.QueryTable("users")
+	qs := o.QueryTable("user")
 	num, err := qs.Filter("username", user.Username).Count()
 
 	var errorJson ErrorMessage
@@ -50,11 +50,14 @@ func CreateUser(user User) (UserSuccessJson, ErrorMessage) {
 	if err == nil {
 		// 如果没有重复用户
 		if num == 0 {
+			user.Nickname = GetMe()
 			id, err := o.Insert(&user)
 
+			fmt.Println(err)
 			// 注册成功
 			if err == nil {
 				userJson.Username = user.Username
+				userJson.Nickname = user.Nickname
 				userJson.Id = id
 
 				fmt.Println("注册成功", userJson)
@@ -74,12 +77,13 @@ func Login(user User) (UserSuccessJson, ErrorMessage) {
 	o := orm.NewOrm()
 	o.Using("default")
 
-	// 存放数据库去除的 user
+	// 存放数据库取出的 user
 	var ouser User
 	var errorJson ErrorMessage
 	var userJson UserSuccessJson
 
-	err := o.QueryTable("users").Filter("username", user.Username).One(&ouser)
+	err := o.QueryTable("user").Filter("username", user.Username).One(&ouser)
+	fmt.Println(err)
 
 	if err == nil {
 		// 如果密码不相等
@@ -89,6 +93,7 @@ func Login(user User) (UserSuccessJson, ErrorMessage) {
 		}
 
 		userJson.Username = ouser.Username
+		userJson.Nickname = ouser.Nickname
 		userJson.Id = ouser.Id
 		return userJson, errorJson
 	}
@@ -98,15 +103,13 @@ func Login(user User) (UserSuccessJson, ErrorMessage) {
 	return userJson, errorJson
 }
 
-func GetMe() UserSuccessJson {
+func GetMe() string {
 	// 读取 json
 	bytes, err := ioutil.ReadFile("models/nickname.json")
-	var userJson UserSuccessJson
 
 	if err != nil {
 		// 读取失败，生成 json，使用默认名称
-		userJson.Nickname = "默认的昵称"
-		return userJson
+		return "默认的昵称"
 	}
 
 	var nickname Nickname
@@ -120,8 +123,5 @@ func GetMe() UserSuccessJson {
 	var adjective string = nickname.Adjective[r.Intn(adjectiveLen)]
 	var noum string = nickname.Noum[r.Intn(noumLen)]
 
-	// 生成 json
-	userJson.Nickname = fmt.Sprintf("%s的%s", adjective, noum)
-
-	return userJson
+	return fmt.Sprintf("%s的%s", adjective, noum)
 }

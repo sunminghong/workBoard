@@ -7,3 +7,4 @@
 *.less linguist-language=go
 *.sass linguist-language=go
 *.go linguist-language=go
+*.js text eol=lf

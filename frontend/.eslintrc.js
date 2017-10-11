@@ -14,7 +14,6 @@ module.exports = {
   plugins: [
     'html'
   ],
-  'linebreak-style': ['error', 'windows'],
   // check if imports actually resolve
   'settings': {
     'import/resolver': {
@@ -25,6 +24,8 @@ module.exports = {
   },
   // add your custom rules here
   'rules': {
+    'linebreak-style': 'off',
+    'class-methods-use-this': 'off',
     // don't require .vue extension when importing
     'import/extensions': ['error', 'always', {
       'js': 'never',

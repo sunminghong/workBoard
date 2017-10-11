@@ -17,7 +17,8 @@ func init() {
 	orm.RegisterModel(new(User))
 
 	// // 建表
-	// CreateTables()
+
+	CreateTables()
 
 	// test
 	// var board Board
