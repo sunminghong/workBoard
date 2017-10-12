@@ -13,10 +13,10 @@ import (
 
 // 用户信息
 type User struct {
-	Id       int64
-	Username string `orm:"size(50)"`
-	Nickname string `orm:"size(50)"`
-	Password string `orm:"size(50)"`
+	Id       int64  `json:"id"`
+	Username string `orm:"size(50)" json:"username"`
+	Nickname string `orm:"size(50)" json:"nickname"`
+	Password string `orm:"size(50)" json:"password"`
 }
 
 // 用户成功信息 json
