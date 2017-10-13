@@ -21,13 +21,20 @@
     <Input placeholder="请输入账号" size="small" v-show="false"></Input>
     <Input placeholder="请输入密码" size="small" type="password" v-show="false"></Input>
 
+
     <div class="login-main">
+      <Alert type="error" show-icon v-if="errorMessage" class="login-message">
+        {{errorMessage}}
+      </Alert>
       <div class="login-username">
         <span class="title">账号</span>
         <div>
           <Input v-model="username" placeholder="请输入账号" size="small" autocomplete="off" autofocus></Input>
         </div>
       </div>
+
+
+
 
       <div class="login-username">
         <span class="title">密码</span>
@@ -54,18 +61,23 @@ export default class login extends Vue {
   password: string = ''
   vue: any = this
   buttonText: string = '注册'
+  errorMessage: string = ''
   created() {
     if (this.$route.name === 'LogIn') {
       this.buttonText = '登录'
     }
   }
-  submit() {
-    if (this.$route.name === 'LogIn') {
-      UsersApi.login(this.username, this.password)
-      return
+  async submit() {
+    try {
+      if (this.$route.name === 'LogIn') {
+        await UsersApi.login(this.username, this.password)
+      } else {
+        await UsersApi.create(this.username, this.password)
+      }
+      this.$router.push({ path: '/' })
+    } catch (err) {
+      this.errorMessage = err.response.data.message
     }
-
-    UsersApi.create(this.username, this.password)
   }
 }
 
@@ -84,6 +96,13 @@ export default class login extends Vue {
 .login-main {
   z-index: 1;
   position: relative;
+}
+
+.login-message {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: -40px;
 }
 
 .login-username,

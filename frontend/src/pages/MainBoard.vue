@@ -20,9 +20,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import axios from 'axios'
 import { Board } from '../service/mainBoard'
-
 @Component
 
 export default class MainBoard extends Vue {
@@ -42,12 +40,6 @@ export default class MainBoard extends Vue {
       ],
     },
   ]
-  mounted() {
-    axios.get('/users/me', {
-    }).then((res: any) => {
-      console.log(res)
-    })
-  }
 }
 </script>
 
