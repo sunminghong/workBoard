@@ -7,8 +7,8 @@
     </div>
 
     <div class="header-login" v-else>
-      <router-link to="{ name: 'LogIn'}">登录</router-link>
-      <router-link to="{ name: 'SignUp'}">注册</router-link>
+      <router-link :to="{ name: 'LogIn'}" v-if="$route.name !== 'LogIn'">登录</router-link>
+      <router-link :to="{ name: 'SignUp'}" v-if="$route.name !== 'SignUp'">注册</router-link>
     </div>
   </header>
 </template>
@@ -38,6 +38,8 @@ export default class HeaderBar extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
 .header {
+  z-index: 2;
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
