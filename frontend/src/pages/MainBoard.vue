@@ -3,9 +3,10 @@
     <header class="main-board-nav">
     </header>
 
-    <ul class="main-board-list">
-      <li v-for="board in boardList$" :key="board.name">
+    <draggable v-model="boardList$" element="ul" class="main-board-list" :options="{ draggable: 'li.draggable', filter: '' }">
+      <li v-for="board in boardList$" :key="board.name" class="draggable">
         <h6 class="main-board-title">{{board.title}}</h6>
+        <h6>xxx</h6>
         <a href="javascript:" class="board-task-create">添加新的任务</a>
       </li>
 
@@ -21,16 +22,21 @@
 
         <a v-else href="javascript:" class="board-task-create" @click="isShowCreateInput = true">新建任务列表</a>
       </li>
-    </ul>
+    </draggable>
   </main>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import draggable from 'vuedraggable'
 import Component from 'vue-class-component'
 import { BoardListRx, Board } from '../RxService/boardList'
 
-@Component
+@Component({
+  components: {
+    draggable,
+  },
+})
 
 export default class MainBoard extends Vue {
   boardList$: Board[] = BoardListRx.data
@@ -87,17 +93,22 @@ export default class MainBoard extends Vue {
 
 .main-board-list {
   height: 100%;
-  padding: 0 10px;
+  padding: 0 5px;
   text-align: left;
   white-space: nowrap;
   overflow-x: auto;
   overflow-y: hidden;
   transform: translate3d(0, 0, 0);
+  // 去间距
+  font-size: 0;
+  -webkit-text-size-adjust: none;
 
   li {
     display: inline-flex;
     flex-direction: column;
     vertical-align: top;
+    margin-left: 5px;
+    margin-right: 5px;
     width: 290px;
     height: 100%;
     background-color: red;
@@ -105,10 +116,6 @@ export default class MainBoard extends Vue {
     background-color: #eee;
     overflow-y: auto;
     overflow-x: hidden;
-
-    &:not(:last-of-type) {
-      margin-right: 10px;
-    }
   }
 }
 

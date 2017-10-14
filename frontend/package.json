@@ -28,7 +28,8 @@
     "vue-cli": "^2.8.2",
     "vue-particles": "^1.0.9",
     "vue-router": "^2.7.0",
-    "vue-rx": "^4.0.1"
+    "vue-rx": "^4.0.1",
+    "vuedraggable": "^2.14.1"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
