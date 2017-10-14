@@ -40,7 +40,15 @@
       <div class="login-username">
         <span class="title">密码</span>
         <div>
-          <Input v-model="password" placeholder="请输入密码" size="small" type="password" autocomplete="off"></Input>
+          <Input
+            placeholder="请输入密码"
+            size="small"
+            type="password"
+            autocomplete="off"
+            v-model="password"
+            @click="submit"
+            @keydown.enter.meta.native="submit"
+            @keydown.enter.ctrl.native="submit"></Input>
         </div>
       </div>
 

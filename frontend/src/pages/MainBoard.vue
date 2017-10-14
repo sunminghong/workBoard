@@ -12,7 +12,13 @@
 
       <li>
         <div v-if="isShowCreateInput" class="main-board-create">
-          <Input placeholder="请输入..." v-model="newBoardTitle" :autofocus="true"></Input>
+          <Input placeholder="请输入..."
+            v-model="newBoardTitle"
+            :autofocus="true"
+             @click="createNewBoard"
+             @keydown.enter.meta.native="createNewBoard"
+             @keydown.enter.ctrl.native="createNewBoard"
+            ></Input>
 
           <div class="main-board-create-buttons">
             <Button type="text" @click="isShowCreateInput = false">取消</Button>
