@@ -1,6 +1,9 @@
 <template>
   <header class="header">
-    <div class="header-menu"></div>
+    <div class="header-menu">
+      <div class="logo title">WorkBoard</div>
+    </div>
+
     <div class="header-user" v-if="user.nickname">
       <span class="nickname">{{user.nickname}}</span>
       <Avatar icon="person" size="large" />
@@ -46,9 +49,23 @@ export default class HeaderBar extends Vue {
   height: 50px;
   padding: 0 40px;
 }
+
+.header-menu {
+  .logo {
+    font-weight: 500;
+    font-size: 21px;
+    cursor: pointer;
+  }
+}
+
 .header-user {
   .nickname {
+    font-size: 16px;
     margin-right: 10px;
   }
+}
+
+.header-login {
+  font-size: 16px;
 }
 </style>
