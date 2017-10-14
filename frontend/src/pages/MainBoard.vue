@@ -1,17 +1,25 @@
 <template>
   <main class="main-board">
     <header class="main-board-nav">
-
     </header>
+
     <ul class="main-board-list">
-      <li v-for="board in boardList" :key="board.name" class="main-board-body">
+      <li v-for="board in boardList$" :key="board.name">
         <h6 class="main-board-title">{{board.title}}</h6>
-        <ul class="board-task-list">
-          <li v-for="task in board.tasks" :key="task.title" class="board-task-brief">
-            {{task.title}}
-          </li>
-        </ul>
         <a href="javascript:" class="board-task-create">添加新的任务</a>
+      </li>
+
+      <li>
+        <div v-if="isShowCreateInput" class="main-board-create">
+          <Input placeholder="请输入..." v-model="newBoardTitle" :autofocus="true"></Input>
+
+          <div class="main-board-create-buttons">
+            <Button type="text" @click="isShowCreateInput = false">取消</Button>
+            <Button type="primary" @click="createNewBoard">保存</Button>
+          </div>
+        </div>
+
+        <a v-else href="javascript:" class="board-task-create" @click="isShowCreateInput = true">新建任务列表</a>
       </li>
     </ul>
   </main>
@@ -20,26 +28,38 @@
 <script lang="ts">
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import { Board } from '../service/mainBoard'
+import { BoardListRx, Board } from '../RxService/boardList'
+
 @Component
 
 export default class MainBoard extends Vue {
-  msg: string = 'this is a typescript project now'
-  boardList: Board[] = [
-    {
-      title: '近期任务',
-      tasks: [
-        {
-          title: '任务1',
-          completeAt: null,
-        },
-        {
-          title: '任务2',
-          completeAt: '2017-1-1',
-        },
-      ],
-    },
-  ]
+  boardList$: Board[] = BoardListRx.data
+  newBoardTitle: string = ''
+  isShowCreateInput: boolean = false
+  created() {
+    BoardListRx.init()
+
+    BoardListRx.set([
+      {
+        createdAt: null,
+        title: '第一个列表',
+        token: null,
+      },
+    ])
+  }
+  // 创建新的 Board
+  createNewBoard() {
+    BoardListRx.set([
+      {
+        createdAt: null,
+        title: this.newBoardTitle,
+        token: null,
+      },
+    ])
+
+    this.isShowCreateInput = false
+    this.newBoardTitle = ''
+  }
 }
 </script>
 
@@ -67,21 +87,28 @@ export default class MainBoard extends Vue {
 
 .main-board-list {
   height: 100%;
-  padding-left: 10px;
-  padding-right: 10px;
-  display: flex;
-}
+  padding: 0 10px;
+  text-align: left;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  transform: translate3d(0, 0, 0);
 
-.main-board-body {
-  display: flex;
-  flex-direction: column;
-  width: 290px;
-  background-color: red;
-  border-radius: 3px;
-  background-color: #eee;
+  li {
+    display: inline-flex;
+    flex-direction: column;
+    vertical-align: top;
+    width: 290px;
+    height: 100%;
+    background-color: red;
+    border-radius: 3px;
+    background-color: #eee;
+    overflow-y: auto;
+    overflow-x: hidden;
 
-  &:not(:last-of-type) {
-    margin-right: 10px;
+    &:not(:last-of-type) {
+      margin-right: 10px;
+    }
   }
 }
 
@@ -92,7 +119,8 @@ export default class MainBoard extends Vue {
   margin: 0 10px;
   height: 50px;
   font-size: 17px;
-  font-weight: 600;
+  color: #1c2438;
+  font-weight: 500;
   line-height: 23px;
   cursor: move;
 }
@@ -138,6 +166,28 @@ export default class MainBoard extends Vue {
 
   &:hover {
     background-color: #e2e2e2;
+  }
+}
+
+.main-board-create {
+  margin: 10px 10px 0;
+
+  input {
+    height: 40px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #1c2438;
+  }
+}
+
+.main-board-create-buttons {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 10px;
+
+  button {
+    margin-left: 10px;
   }
 }
 </style>

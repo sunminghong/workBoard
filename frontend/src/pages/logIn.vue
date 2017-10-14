@@ -18,23 +18,24 @@
       :clickEffect="true"
       clickMode="push"></vue-particles>
 
-    <Input placeholder="请输入账号" size="small" v-show="false"></Input>
-    <Input placeholder="请输入密码" size="small" type="password" v-show="false"></Input>
-
+    <!-- 注册页面屏蔽自动填充账号密码 -->
+    <template v-if="$route.name === 'SignUp'">
+      <Input placeholder="请输入账号" size="small" v-show="false"></Input>
+      <Input placeholder="请输入密码" size="small" type="password" v-show="false"></Input>
+    </template>
 
     <div class="login-main">
+      <!-- 错误提示信息 -->
       <Alert type="error" show-icon v-if="errorMessage" class="login-message">
         {{errorMessage}}
       </Alert>
+
       <div class="login-username">
         <span class="title">账号</span>
         <div>
           <Input v-model="username" placeholder="请输入账号" size="small" autocomplete="off" autofocus></Input>
         </div>
       </div>
-
-
-
 
       <div class="login-username">
         <span class="title">密码</span>
@@ -63,10 +64,11 @@ export default class login extends Vue {
   buttonText: string = '注册'
   errorMessage: string = ''
   created() {
-    if (this.$route.name === 'LogIn') {
+    if (this.$route.name === 'LogIn' || this.$route.name === 'SignIn') {
       this.buttonText = '登录'
     }
   }
+
   async submit() {
     try {
       if (this.$route.name === 'LogIn') {
